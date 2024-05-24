@@ -31,6 +31,27 @@ CREATE TABLE products (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Interests Table Creation
+CREATE TABLE interests (
+    interest_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT
+);
+
+-- User Interests Join Table
+CREATE TABLE user_interests (
+    user_id INTEGER REFERENCES users(user_id),
+    interest_id INTEGER REFERENCES interests(interest_id),
+    PRIMARY KEY (user_id, interest_id)
+);
+
+-- Products Interests Join Table
+CREATE TABLE products_interests (
+    product_id INTEGER REFERENCES products(product_id),
+    interest_id INTEGER REFERENCES interests(interest_id),
+    PRIMARY KEY (product_id, interest_id)
+);
+
 -- Attribute Table Creation
 CREATE TABLE attributes (
     attribute_id SERIAL PRIMARY KEY,
@@ -50,6 +71,13 @@ CREATE TABLE product_attributes (
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
 
+-- Index Creation for Interests Table
+CREATE INDEX idx_interests_name ON interests(name);
+
+-- Index Creation for User Interests Table
+CREATE INDEX idx_user_interests_user_id ON user_interests(user_id);
+CREATE INDEX idx_user_interests_interest_id ON user_interests(interest_id);
+
 -- Index Creation for Categories Table
 CREATE INDEX idx_categories_name ON categories(name);
 CREATE INDEX idx_categories_parent_id ON categories(parent_category_id);
@@ -59,6 +87,10 @@ CREATE INDEX idx_products_name ON products(name);
 CREATE INDEX idx_products_user_id ON products(user_id);
 CREATE INDEX idx_products_category_id ON products(category_id);
 CREATE INDEX idx_products_rating ON products(rating);
+
+-- Index Creation for Products Interests Table
+CREATE INDEX idx_products_interests_product_id ON products_interests(product_id);
+CREATE INDEX idx_products_interests_interest_id ON products_interests(interest_id);
 
 -- Index Creation for Attributes Table
 CREATE INDEX idx_attributes_name ON attributes(name);
